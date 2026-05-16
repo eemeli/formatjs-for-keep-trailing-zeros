@@ -48,7 +48,9 @@ assert.sameValue(nf.format('1.230e-2'), '0.01230')
 assert.sameValue(nf.format('12.30e-1'), '1.230')
 assert.sameValue(nf.format('12.30e-2'), '0.1230')
 assert.sameValue(nf.format('12.30e-3'), '0.01230')
-assert.sameValue(nf.format('1.2345e-1000'), '0.0000')
+assert.sameValue(nf.format('1.2345e-21'), '0.00000000000000000000')
+assert.sameValue(nf.format('1.2345e-100'), '0.00000000000000000000')
+assert.sameValue(nf.format('1.2345e-1000'), '0.00000000000000000000')
 
 // Default maximumfractionDigits is 3
 const nf2 = new NumberFormat('en-US', {minimumFractionDigits: 1})
@@ -69,11 +71,14 @@ assert.sameValue(nf3.format('1.0'), '1.0')
 assert.sameValue(nf3.format('1.00'), '1.00')
 assert.sameValue(nf3.format('0.00'), '0.00')
 assert.sameValue(nf3.format('.00'), '0.00')
+assert.sameValue(nf3.format('0.000000'), '0.000')
 assert.sameValue(nf3.format('1.000000'), '1.000')
 assert.sameValue(nf3.format('1.99999'), '2.000')
 assert.sameValue(nf3.format('1.2'), '1.2')
 assert.sameValue(nf3.format('0.12'), '0.12')
 assert.sameValue(nf3.format('0.012'), '0.012')
+assert.sameValue(nf3.format('1.2345e-21'), '0.000000000000000000001235')
+assert.sameValue(nf3.format('1.2345e-1000'), '0.000')
 
 const nf4 = new NumberFormat('en-US', {
   minimumSignificantDigits: 2,
@@ -87,6 +92,7 @@ assert.sameValue(nf4.format('1.0'), '1.0')
 assert.sameValue(nf4.format('1.00'), '1.0')
 assert.sameValue(nf4.format('0.00'), '0.0')
 assert.sameValue(nf4.format('.00'), '0.0')
+assert.sameValue(nf4.format('0.000000'), '0.0')
 assert.sameValue(nf4.format('1.000000'), '1.0')
 assert.sameValue(nf4.format('1.99999'), '2.0')
 

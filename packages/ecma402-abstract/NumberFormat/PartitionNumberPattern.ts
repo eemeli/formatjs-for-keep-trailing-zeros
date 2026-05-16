@@ -63,7 +63,10 @@ export function PartitionNumberPattern(
       // 8.d. Let x be x × 10^(-exponent).
       x = x.times(getPowerOf10(-exponent))
     }
-    Object.assign(x, {__StringDigitCount: (_x as any).__StringDigitCount})
+    Object.assign(x, {
+      __StringDigitCount: (_x as any).__StringDigitCount,
+      __MVFractionDigitCount: (_x as any).__MVFractionDigitCount,
+    })
 
     // 8.e. Let formatNumberResult be FormatNumericToString(internalSlots, x).
     const formatNumberResult = FormatNumericToString(internalSlots, x)

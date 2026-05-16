@@ -30,7 +30,7 @@ export function ToIntlMathematicalValue(input: unknown): Decimal {
 
   // Try to convert to Decimal (handles numbers and strings)
   try {
-    const d = new Decimal(primValue as any)
+    let d = new Decimal(primValue as any)
     if (typeof primValue === 'string') {
       const numericLiteral = primValue.trim()
       const unsignedDecimalLiteral = numericLiteral.startsWith('-')
@@ -38,14 +38,27 @@ export function ToIntlMathematicalValue(input: unknown): Decimal {
         : numericLiteral
 
       let stringDigitCount = 0
-      const match = unsignedDecimalLiteral.match(/^([0-9]*)(?:\.([0-9]*))?/)!
+      let mvFractionDigitCount = 0
+      const match = unsignedDecimalLiteral.match(
+        /^([0-9]*)(?:\.([0-9]*))?(?:[eE](-?[0-9]+))?/
+      )!
       if (match) {
-        const fd = match[2] ?? ''
+        const intPart = match[1] ?? ''
+        const fracPart = match[2] ?? ''
+        const n = fracPart.length
+        const e = Number(match[3] ?? 0)
         stringDigitCount =
-          (match[1] + fd).replace(/^0+/, '').length || 1 + fd.length
+          (intPart + fracPart).replace(/^0+/, '').length || 1 + n
+        mvFractionDigitCount = Math.max(0, n - e)
       }
 
-      Object.assign(d, {__StringDigitCount: stringDigitCount})
+      const rounded = d.toNumber()
+      if (!Number.isFinite(rounded) || rounded === 0) d = new Decimal(rounded)
+
+      Object.assign(d, {
+        __StringDigitCount: stringDigitCount,
+        __MVFractionDigitCount: mvFractionDigitCount,
+      })
     }
     return d
   } catch {

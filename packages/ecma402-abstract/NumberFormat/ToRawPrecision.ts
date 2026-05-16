@@ -131,12 +131,14 @@ function findN2E2R2(x: Decimal, p: number) {
  * https://tc39.es/ecma402/#sec-torawprecision
  * @param x a finite non-negative Number or BigInt
  * @param stringDigitCount a non-negative integer
+ * @param mvFractionDigitCount a non-negative integer
  * @param minPrecision an integer between 1 and 21
  * @param maxPrecision an integer between 1 and 21
  */
 export function ToRawPrecision(
   x: Decimal,
   stringDigitCount: number,
+  mvFractionDigitCount: number,
   minPrecision: number,
   maxPrecision: number,
   unsignedRoundingMode: UnsignedRoundingModeType
@@ -185,6 +187,7 @@ export function ToRawPrecision(
     m = n.toString()
   }
 
+  const isZero = /^0+$/.test(m)
   let int
 
   // 4. If e ≥ p - 1, then
@@ -209,7 +212,10 @@ export function ToRawPrecision(
     int = 1
   }
 
-  let resolvedMinPrecision = Math.max(minPrecision, stringDigitCount)
+  let resolvedMinPrecision = Math.max(
+    minPrecision,
+    isZero ? mvFractionDigitCount + 1 : stringDigitCount
+  )
 
   // 7. If m contains ".", and maxPrecision > minPrecision, then
   if (m.includes('.') && maxPrecision > resolvedMinPrecision) {

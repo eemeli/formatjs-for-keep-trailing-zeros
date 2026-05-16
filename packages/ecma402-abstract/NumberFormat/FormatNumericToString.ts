@@ -32,6 +32,7 @@ export function FormatNumericToString(
 } {
   let x = _x
   let stringDigitCount = (x as any).__StringDigitCount ?? 0
+  let mvFractionDigitCount = (x as any).__MVFractionDigitCount ?? 0
   let sign
   // -0
   if (x.isZero() && x.isNegative()) {
@@ -52,7 +53,10 @@ export function FormatNumericToString(
     }
   }
 
-  if (intlObject.trailingZeroDisplay === 'stripToMinimum') stringDigitCount = 0
+  if (intlObject.trailingZeroDisplay === 'stripToMinimum') {
+    stringDigitCount = 0
+    mvFractionDigitCount = 0
+  }
 
   let result: RawNumberFormatResult
 
@@ -67,6 +71,7 @@ export function FormatNumericToString(
       result = ToRawPrecision(
         x,
         stringDigitCount,
+        mvFractionDigitCount,
         intlObject.minimumSignificantDigits,
         intlObject.maximumSignificantDigits,
         unsignedRoundingMode
@@ -76,6 +81,7 @@ export function FormatNumericToString(
       result = ToRawFixed(
         x,
         stringDigitCount,
+        mvFractionDigitCount,
         intlObject.minimumFractionDigits,
         intlObject.maximumFractionDigits,
         intlObject.roundingIncrement,
@@ -86,6 +92,7 @@ export function FormatNumericToString(
       let sResult = ToRawPrecision(
         x,
         stringDigitCount,
+        mvFractionDigitCount,
         intlObject.minimumSignificantDigits,
         intlObject.maximumSignificantDigits,
         unsignedRoundingMode
@@ -93,6 +100,7 @@ export function FormatNumericToString(
       let fResult = ToRawFixed(
         x,
         stringDigitCount,
+        mvFractionDigitCount,
         intlObject.minimumFractionDigits,
         intlObject.maximumFractionDigits,
         intlObject.roundingIncrement,

@@ -43,12 +43,14 @@ function findN2R2(x: Decimal, f: number, roundingIncrement: number) {
  * https://tc39.es/ecma402/#sec-torawfixed
  * @param x a finite non-negative Number or BigInt
  * @param stringDigitCount a non-negative integer
+ * @param mvFractionDigitCount a non-negative integer
  * @param minFraction an integer between 0 and 20
  * @param maxFraction an integer between 0 and 20
  */
 export function ToRawFixed(
   x: Decimal,
   stringDigitCount: number,
+  mvFractionDigitCount: number,
   minFraction: number,
   maxFraction: number,
   roundingIncrement: number,
@@ -117,8 +119,10 @@ export function ToRawFixed(
     // e. Let int be the length of a.
     int = a.length
 
-    let sfc = stringDigitCount - int
-    if (!n.isZero()) sfc += zn
+    let sfc
+    if (/^0+$/.test(m)) sfc = mvFractionDigitCount
+    else if (n.isZero()) sfc = stringDigitCount - int
+    else sfc = stringDigitCount - int + zn
 
     // f. Let cut be maxFraction - max(stringDigitCount - int, minFraction).
     let cut = maxFraction - Math.max(sfc, minFraction)
